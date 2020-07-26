@@ -86,3 +86,11 @@ Refer to (doc)[./Endpoint.md]
 
 1. A few accounts have been created, together with some restaurants. Refer to json files in the `backend` folder.
 2. user1@gmail.com is currently blocked by rest_0
+
+### TODO
+
+1. Allow owners to see orders for a restaurant
+2. Add meals to restaurants
+3. Block users
+4. Update orders
+5. Update readme and videos
