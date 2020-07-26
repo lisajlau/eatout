@@ -35,7 +35,6 @@ const RegisterRestaurant: FC<RegisterRestaurant> = ({
   const [restaurant, setRestaurant] = useState<RestaurantI>({
     name: "",
     description: "",
-    owner: "",
     address: "",
     types: [],
   });
@@ -100,7 +99,7 @@ const RegisterRestaurant: FC<RegisterRestaurant> = ({
           />
         </div>
         <div>
-          <label htmlFor="name">Address</label>
+          <label htmlFor="name">Types</label>
           <input
             className="u-full-width"
             type="text"

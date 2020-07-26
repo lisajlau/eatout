@@ -48,7 +48,7 @@ export interface RestaurantI {
   description: string;
   owner: string;
   address: string;
-  types: string[];
+  types?: string[];
   meals?: MealI[];
 }
 

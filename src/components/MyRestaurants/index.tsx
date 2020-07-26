@@ -96,8 +96,8 @@ const MyRestaurants: FC<{}> = () => {
     async (restaurant: RestaurantI) => {
       try {
         await registerRestaurant({
-          owner: user.username,
           ...restaurant,
+          owner: user.username,
         });
         const resp = await fetchRestaurantsByOwner(user.username);
         setRestaurants(resp);
