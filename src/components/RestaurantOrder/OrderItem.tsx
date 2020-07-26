@@ -1,7 +1,7 @@
 import * as React from "react";
 import { FC, useState, useCallback } from "react";
 import styled from "styled-components";
-import { Order } from "../../services/api";
+import { MealOrderI } from "../../services/api";
 import {
   sprout,
   spacer8,
@@ -14,7 +14,7 @@ import {
 import { formatCurrencyToPounds } from "../../services/utils";
 
 type OrderItemProps = {
-  order: Order;
+  order: MealOrderI;
   onUpdate: (mealId: string, count: number) => void;
 };
 

@@ -1,10 +1,12 @@
 import * as React from "react";
 import { FC, useCallback, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
+import { useLocalStorage } from "react-use";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { spacer64, spacer32 } from "../../styles/tokens";
 import { Role, loginUser, UserI } from "../../services/api";
+import { Cookies } from "../../services/constant";
 import Banner, { BannerType } from "../Banner";
 
 const Flexbox = styled.div`
@@ -22,14 +24,19 @@ const Spacer = styled.div`
   width: 100%;
 `;
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
 const Login: FC<{}> = () => {
   const history = useHistory();
+  let from = useQuery().get("from");
+  const [, setUserLogin] = useLocalStorage(Cookies.UserLogin);
   const [user, setUser] = useState<UserI>({
     username: "",
     password: "",
     role: Role.User,
   });
-
   const [error, setError] = useState("");
 
   const onLogin = useCallback(
@@ -39,8 +46,9 @@ const Login: FC<{}> = () => {
         setError("Please fill up all fields");
       }
       try {
-        await loginUser(user);
-        history.push("/");
+        const resp = await loginUser(user);
+        setUserLogin(resp);
+        history.push(from ? from : "/");
       } catch (e) {
         setError(e.message);
       }

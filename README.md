@@ -9,6 +9,7 @@ This project , uses [parcel](https://parceljs.org/getting_started.html), SCSS, h
 - Users aren't allowed to register with the same email address
 - Restaurant with same names is not allowed
 - This has not been tested with multiple devices, but have been build with responsive in mind
+- There are some example tests cases but they are not complete
 
 ## Functional requirements
 
@@ -80,3 +81,8 @@ yarn build
 ### Endpoints
 
 Refer to (doc)[./Endpoint.md]
+
+### How to test
+
+1. A few accounts have been created, together with some restaurants. Refer to json files in the `backend` folder.
+2. user1@gmail.com is currently blocked by rest_0

@@ -1,7 +1,10 @@
 import * as React from "react";
 import { FC, useState, useCallback } from "react";
+import { useHistory } from "react-router-dom";
+import { useLocalStorage } from "react-use";
 import styled from "styled-components";
-import { Meal, Order } from "../../services/api";
+import { MealI, MealOrderI } from "../../services/api";
+import { Cookies } from "../../services/constant";
 import {
   sprout,
   fadeGray,
@@ -13,11 +16,14 @@ import {
   spacer48,
 } from "../../styles/tokens";
 import OrderItem from "./OrderItem";
+import MealItem from "./MealItem";
 
 import { formatCurrencyToPounds } from "../../services/utils";
+import Banner, { BannerType } from "../Banner";
 
 type MealsProps = {
-  list: Meal[];
+  list: MealI[];
+  restaurantId: string;
 };
 
 const Grid = styled.div`
@@ -35,54 +41,15 @@ const Heading = styled.h4`
   margin: ${spacer48} 0 ${spacer8} 0;
 `;
 
-const Meal = styled.div`
-  background-color: ${alabaster};
-  border-bottom: solid 1px ${fadeGray};
-  padding: ${spacer12};
-  display: flex;
-  flex-grow: 1;
-  justify-content: space-between;
-`;
-
 const Paragraph = styled.p`
   color: ${doveGray};
   text-align: center;
-`;
-
-const MealTitle = styled.h5`
-  margin: ${spacer8};
-`;
-
-const MealCell = styled.div`
-  margin: ${spacer8};
-  color: ${doveGray};
-`;
-
-const PriceCell = styled.div`
-  text-align: center;
-  width: 80px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 `;
 
 const TotalBillCell = styled.div`
   text-align: center;
   margin: ${spacer24};
   font-size: 40px;
-`;
-
-const Button = styled.button`
-  color: ${sprout};
-  border-color: ${sprout};
-  font-size: 18px;
-  border-radius: 99px;
-  width: 44px;
-  height: 44px;
-  margin: ${spacer8};
-  padding: 0;
-  background-color: ${alabaster};
 `;
 
 const Cart = styled.div`
@@ -97,9 +64,15 @@ const CheckoutButton = styled.button`
   width: 100%;
 `;
 
-const MealsListing: FC<MealsProps> = ({ list }) => {
-  const [orders, setOrders] = useState<Order[]>([]);
+const MealsListing: FC<MealsProps> = ({ list, restaurantId }) => {
+  const history = useHistory();
+  const [orders, setOrders] = useState<MealOrderI[]>([]);
   const [totalBill, setTotalBill] = useState<number>(0);
+  const [error, setError] = useState("");
+  const [basket, setBasket] = useLocalStorage<{
+    restaurantId: string;
+    orders: MealOrderI[];
+  }>(Cookies.Basket);
   const addToOrder = useCallback(
     (meal) => {
       const existing = orders.findIndex(
@@ -152,26 +125,33 @@ const MealsListing: FC<MealsProps> = ({ list }) => {
     },
     [orders]
   );
+
+  const onCheckout = useCallback(() => {
+    if (restaurantId && orders.length > 0) {
+      setBasket({
+        restaurantId,
+        orders,
+      });
+      history.push("/checkout");
+    }
+    setError("Something went wrong! Please try again");
+  }, [orders]);
+
+  React.useEffect(() => {
+    if (basket && basket.restaurantId === restaurantId) {
+      setOrders(basket.orders);
+    }
+  }, []);
+
   return (
     <>
       <Heading>Menu</Heading>
-
+      {error && <Banner type={BannerType.ERROR} message={error} />}
       <Grid>
         <div>
           {list &&
             list.map((meal) => (
-              <Meal key={meal.name}>
-                <div>
-                  <MealTitle>{meal.name}</MealTitle>
-                  <MealCell>{meal.description}</MealCell>
-                </div>
-                <PriceCell>
-                  <div>{formatCurrencyToPounds(meal.price)}</div>
-                  <div>
-                    <Button onClick={() => addToOrder(meal)}>&#43;</Button>
-                  </div>
-                </PriceCell>
-              </Meal>
+              <MealItem meal={meal} onUpdate={addToOrder} key={meal.name} />
             ))}
           {list.length === 0 && (
             <Paragraph>There are no meals available</Paragraph>
@@ -179,7 +159,7 @@ const MealsListing: FC<MealsProps> = ({ list }) => {
         </div>
         <div>
           <Cart>
-            <h5>Your basket</h5>
+            <h4>My order</h4>
             <div>
               {orders.length > 0 &&
                 orders.map((item) => (
@@ -192,11 +172,11 @@ const MealsListing: FC<MealsProps> = ({ list }) => {
               {orders.length === 0 && <Paragraph>There are no items</Paragraph>}
             </div>
             <div>
-              <h5>Subtotal</h5>
+              <h5>Total</h5>
               <TotalBillCell>{formatCurrencyToPounds(totalBill)}</TotalBillCell>
             </div>
             <div>
-              <CheckoutButton>Checkout</CheckoutButton>
+              <CheckoutButton onClick={onCheckout}>Checkout</CheckoutButton>
             </div>
           </Cart>
         </div>

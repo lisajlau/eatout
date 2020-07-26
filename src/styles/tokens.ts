@@ -1,4 +1,5 @@
 export const bostonBlue: string = "#68AECF";
+export const claypso: string = "#2D7292";
 export const fadeGray: string = "#f1f1f1";
 export const doveGray: string = "#656565";
 export const mineShaft: string = "#333";

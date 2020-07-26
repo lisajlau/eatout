@@ -1,0 +1,16 @@
+h1,
+h2,
+h3,
+h4 {
+  color: #2d7292;
+  letter-spacing: 2px;
+  font-weight: 550;
+}
+
+h5 {
+  font-size: 1.2em;
+}
+
+h6 {
+  font-size: 1.1em;
+}

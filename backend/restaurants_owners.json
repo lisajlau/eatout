@@ -10,6 +10,11 @@
       "username": "rest2@gmail.com",
       "name": "Madi Forest",
       "password": "rest2"
+    },
+    {
+      "username": "rest3@gmail.com",
+      "name": "Mea Man",
+      "password": "rest3"
     }
   ]
 }

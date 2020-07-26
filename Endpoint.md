@@ -153,3 +153,5 @@ Optional:
 200
 
 #### Error Response
+
+This is not the full lists but just an example of potentially how the endpoint can be documented.

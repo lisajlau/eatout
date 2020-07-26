@@ -9,9 +9,33 @@ let restaurants = JSON.parse(JSON.stringify(restaurantsJson));
 let users = JSON.parse(JSON.stringify(usersJson));
 let owners = JSON.parse(JSON.stringify(ownersJson));
 let meals = JSON.parse(JSON.stringify(mealsJson));
+let allOrders = [
+  {
+    order_id: "order_0",
+    username: "user1@gmail.com",
+    orders: [
+      {
+        meal_id: "meal_0",
+        count: 1,
+        name: "Traditional Winter Melon",
+        price: 6.5,
+      },
+      { meal_id: "meal_1", count: 2, name: "MissMe Milk - Warm/Hot", price: 7 },
+      { meal_id: "meal_2", count: 3, name: "Yakult Iced Tea", price: 8 },
+    ],
+    restaurant_id: "rest_3",
+    status: "Cancelled",
+    updated_at: "2020-07-26T18:47:23.757Z",
+  },
+];
 const app = express();
 
-const status = {
+const Role = {
+  User: "user",
+  Owner: "owner",
+};
+
+const Status = {
   PLACED: "Placed",
   CANCELLED: "Cancelled",
   PROCESSING: "Processing",
@@ -61,7 +85,11 @@ app.post("/users/login", (req, res) => {
       (detail) => detail.username === username
     )[0];
     if (userDetails.password === password) {
-      return res.status(200).send();
+      return res.status(200).send({
+        name: userDetails.name,
+        username: userDetails.username,
+        role: Role.User,
+      });
     }
   }
   return res.status(400).send(`Invalid username or password`);
@@ -95,7 +123,11 @@ app.post("/owners/login", (req, res) => {
       (detail) => detail.username === username
     )[0];
     if (ownerDetails.password === password) {
-      return res.status(200).send();
+      return res.status(200).send({
+        name: ownerDetails.name,
+        username: ownerDetails.username,
+        role: Role.Owner,
+      });
     }
   }
   return res.status(400).send(`Invalid username or password`);
@@ -132,21 +164,24 @@ app.post("/restaurants/register", (req, res) => {
   if (!req.body) {
     return res.status(400).send("No information sent");
   }
-  const { name, address, owner } = req.body;
+  const { name, address, owner, types, description } = req.body;
   const found = restaurants.filter((res) => res.name === name);
   if (found.length > 0) {
     return res
       .status(400)
       .send("This business name has already been registered");
   }
+  const rnd = Math.floor(Math.random() * 10000000);
+  const restaurant_id = `rest_${rnd}`;
   restaurants.push({
     name,
     address,
     owner,
     description,
-    type,
+    types,
+    restaurant_id,
   });
-  res.send(`Restaurant ${name} added`);
+  res.status(200).send(`Restaurant ${name} added`);
 });
 
 app.get("/restaurant/:id/meals", (req, res) => {
@@ -187,6 +222,21 @@ app.get("/restaurant/:restaurant_id", (req, res) => {
   return res.status(400).send("Unable to find restaurant");
 });
 
+app.post("/restaurants/:user_id/remove/:restaurant_id", (req, res) => {
+  const user = req.params.user_id;
+  const restaurant = req.params.restaurant_id;
+  const found = restaurants.findIndex(
+    (res) => res.restaurant_id === restaurant && res.owner === user
+  );
+  if (found !== -1) {
+    restaurants.splice(found, 1);
+    return res
+      .status(200)
+      .send(restaurants.filter((res) => res.owner === user));
+  }
+  return res.status(400).send("Unable to find restaurant");
+});
+
 app.post("/users/:username/block", (req, res) => {
   const username = req.params.username;
   const { restaurantId } = req.body;
@@ -203,12 +253,81 @@ app.post("/users/:username/block", (req, res) => {
 });
 
 // TODO
-app.post("/users/:username/order", (req, res) => {});
+app.post("/orders/place", (req, res) => {
+  const { username, restaurant_id, orders } = req.body;
+  const ordersByUser = allOrders.filter((order) => order.username === username);
+  const rnd = Math.floor(Math.random() * 10000000);
+  const orderId = `order_${rnd}`;
+  if (ordersByUser.length > 0) {
+    const openOrdersByUser = ordersByUser.filter(
+      (order) =>
+        order.status !== Status.DELIVERED && order.status !== Status.CANCELLED
+    );
+    if (openOrdersByUser.length > 0) {
+      return res
+        .status(400)
+        .send(`There is an existing order ${openOrdersByUser[0].order_id}`);
+    }
+  }
+  const userDetails = users.account_details.filter(
+    (detail) => detail.username === username
+  )[0];
+  if (userDetails.blocked.includes(restaurant_id)) {
+    return res
+      .status(400)
+      .send(`Unable to process order. Please contact support.`);
+  }
+  allOrders.push({
+    order_id: orderId,
+    username,
+    orders,
+    restaurant_id,
+    status: Status.PLACED,
+    updated_at: new Date(),
+  });
+  return res.status(200).send({ order_id: orderId });
+});
 
-app.get("/users/:username/order/status", (req, res) => {});
-app.post("/users/:username/order/status", (req, res) => {});
+app.get("/users/:username/orders", (req, res) => {
+  const username = req.params.username;
+  const ordersByUser = allOrders.filter((order) => order.username === username);
+  return res.status(200).send(ordersByUser);
+});
 
-app.get("/users/:username/order", (req, res) => {});
+app.get("/orders/:order_id", (req, res) => {
+  const order_id = req.params.order_id;
+  const currentOrder = allOrders.find((order) => order.order_id === order_id);
+  return res.status(200).send(currentOrder);
+});
+
+app.post("/orders/:order_id/cancel", (req, res) => {
+  const order_id = req.params.order_id;
+  const currentOrder = allOrders.find((order) => order.order_id === order_id);
+  if (currentOrder.status === Status.PLACED) {
+    currentOrder.status = Status.CANCELLED;
+    return res.status(200).send(currentOrder);
+  }
+  return res.status(400).send(`Failed to cancel order ${order_id}`);
+});
+
+app.get("/users/:username/openOrders", (req, res) => {
+  const username = req.params.username;
+  const ordersByUser = allOrders.filter((order) => order.username === username);
+  if (ordersByUser.length > 0) {
+    const openOrdersByUser = ordersByUser.filter(
+      (order) =>
+        order.status !== Status.DELIVERED && order.status !== Status.CANCELLED
+    );
+    return res.status(200).send(openOrdersByUser);
+  }
+  return res.status(200).send([]);
+});
+
+app.get("/owners/:username/restaurants", (req, res) => {
+  const username = req.params.username;
+  const found = restaurants.filter((res) => res.owner === username);
+  return res.status(200).send(found);
+});
 
 app.get("/restaurant/:id/orders", (req, res) => {});
 

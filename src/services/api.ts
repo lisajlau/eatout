@@ -1,27 +1,55 @@
 import MimeType from "../constants/mimeType";
 
-export interface Meal {
+export enum OrderStatus {
+  Placed = "Placed",
+  Cancelled = "Cancelled",
+  Processing = "Processing",
+  InRoute = "InRoute",
+  Delivered = "Delivered",
+  Received = "Received",
+}
+
+export interface MealI {
   meal_id: string;
   name: string;
   description: string;
   price: number;
 }
 
-export interface Order {
+export interface MealOrderI {
   meal_id: string;
   name: string;
   price: number;
   count: number;
 }
 
-export interface Restaurant {
+export interface ConfirmedOrderResponse {
+  order_id: string;
+}
+
+export interface ConfirmedOrderI {
+  orders: MealOrderI[];
+  order_id: string;
+  status: OrderStatus;
   restaurant_id: string;
+  username: string;
+  updated_at: string;
+}
+
+export interface PlaceOrderPayload {
+  orders: MealOrderI[];
+  username: string;
+  restaurant_id: string;
+}
+
+export interface RestaurantI {
+  restaurant_id?: string;
   name: string;
   description: string;
   owner: string;
   address: string;
   types: string[];
-  meals?: Meal[];
+  meals?: MealI[];
 }
 
 export interface UserI {
@@ -62,10 +90,10 @@ export const apiFetch = async <T>(
 };
 
 export const fetchRestaurants = async () =>
-  apiFetch<Restaurant[]>(`/restaurants`);
+  apiFetch<RestaurantI[]>(`/restaurants`);
 
 export const fetchRestaurantDetails = async (restId) =>
-  apiFetch<Restaurant>(`/restaurant/${restId}`);
+  apiFetch<RestaurantI>(`/restaurant/${restId}`);
 
 export const registerUser = async ({
   username,
@@ -102,7 +130,7 @@ export const loginUser = async ({ username, password, role }: UserI) => {
     uri = "/owners/login";
   }
   if (uri) {
-    return apiFetch(uri, {
+    return apiFetch<UserI>(uri, {
       method: "POST",
       headers: {
         "Content-Type": MimeType.JSON,
@@ -113,4 +141,53 @@ export const loginUser = async ({ username, password, role }: UserI) => {
       }),
     });
   }
+};
+
+export const placeOrder = async (order: PlaceOrderPayload) => {
+  return apiFetch<ConfirmedOrderResponse>(`/orders/place`, {
+    method: "POST",
+    headers: {
+      "Content-Type": MimeType.JSON,
+    },
+    body: JSON.stringify(order),
+  });
+};
+
+export const fetchConfirmedOrder = async (orderId: string) => {
+  return apiFetch<ConfirmedOrderI>(`/orders/${orderId}`);
+};
+export const cancelOrder = async (orderId: string) => {
+  return apiFetch<ConfirmedOrderI>(`/orders/${orderId}/cancel`, {
+    method: "POST",
+    headers: {
+      "Content-Type": MimeType.JSON,
+    },
+  });
+};
+
+export const fetchAllOrdersByUser = async (username: string) => {
+  return apiFetch<ConfirmedOrderI[]>(`/users/${username}/orders`);
+};
+
+export const fetchRestaurantsByOwner = async (username: string) => {
+  return apiFetch<RestaurantI[]>(`/owners/${username}/restaurants`);
+};
+
+export const registerRestaurant = async (data: RestaurantI) => {
+  return apiFetch<string>("/restaurants/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": MimeType.JSON,
+    },
+    body: JSON.stringify(data),
+  });
+};
+
+export const removeRestaurantById = async (userId: string, restId: string) => {
+  return apiFetch<RestaurantI[]>(`/restaurants/${userId}/remove/${restId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": MimeType.JSON,
+    },
+  });
 };

@@ -2,7 +2,7 @@ import * as React from "react";
 import { FC } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { Restaurant } from "../../services/api";
+import { RestaurantI } from "../../services/api";
 import {
   sprout,
   fadeGray,
@@ -14,9 +14,10 @@ import {
   spacer24,
   spacer48,
 } from "../../styles/tokens";
+import RestaurantCell from "../RestaurantCell";
 
 type RestaurantsProps = {
-  list: Restaurant[];
+  list: RestaurantI[];
 };
 
 const Grid = styled.div`
@@ -42,29 +43,6 @@ const RestaurantGrid = styled.div`
   }
 `;
 
-const RestaurantNameCell = styled.h5`
-  color: ${mineShaft};
-`;
-
-const RestaurantCell = styled.div`
-  margin: ${spacer8};
-`;
-
-const AddressCell = styled(RestaurantCell)`
-  &::before {
-    content: "\\01F4CD";
-  }
-`;
-
-const Pill = styled.span`
-  background-color: ${doveGray};
-  color: ${alabaster};
-  margin-right: ${spacer8};
-  padding: ${spacer8};
-  border-radius: 5px;
-  font-size: 0.8em;
-`;
-
 const RestaurantCTA = styled.div`
   align-self: flex-end;
   background-color: ${sprout};
@@ -81,45 +59,22 @@ const Button = styled(Link)`
   display: block;
 `;
 
-const Restaurant: FC<{ item: Restaurant }> = ({ item }) => {
-  return (
-    <RestaurantGrid>
-      <div>
-        <RestaurantCell>
-          <RestaurantNameCell>{item.name}</RestaurantNameCell>
-        </RestaurantCell>
-        <RestaurantCell>
-          {item.types.map((type) => (
-            <Pill key={type}>{type}</Pill>
-          ))}
-        </RestaurantCell>
-        <RestaurantCell>{item.description}</RestaurantCell>
-        <AddressCell>
-          <a
-            target="_blank"
-            href={`https://www.google.com/maps/?q=${item.address}`}
-            rel="noopener noreferrer"
-          >
-            {item.address}
-          </a>
-        </AddressCell>
-      </div>
-
-      <RestaurantCTA>
-        <Button to={`/restaurant/${item.restaurant_id}`}>View menu</Button>
-      </RestaurantCTA>
-    </RestaurantGrid>
-  );
-};
-
 const RestaurantsListing: FC<RestaurantsProps> = ({ list }) => {
   return (
     <Grid>
       {list &&
         list.map((rest) => (
-          <Restaurant item={rest} key={rest.id}>
-            {rest.name}
-          </Restaurant>
+          <>
+            <RestaurantGrid>
+              <RestaurantCell item={rest} key={rest.restaurant_id} />
+
+              <RestaurantCTA>
+                <Button to={`/restaurant/${rest.restaurant_id}`}>
+                  View menu
+                </Button>
+              </RestaurantCTA>
+            </RestaurantGrid>
+          </>
         ))}
     </Grid>
   );

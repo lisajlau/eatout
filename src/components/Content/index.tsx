@@ -5,7 +5,6 @@ import { fadeGray } from "../../styles/tokens";
 
 const NavBar = styled.div`
   background-color: black;
-  height: calc(100vh - 72px);
 `;
 
 const Content: FC<{}> = () => {

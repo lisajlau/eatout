@@ -6,7 +6,7 @@
     "address": "8 Merton Park Parade, London SW19 3NT",
     "description": "Delicious indian food",
     "types": ["indian"],
-    "owner": "rest_0"
+    "owner": "rest1@gmail.com"
   },
   {
     "id": 1,
@@ -15,7 +15,7 @@
     "address": "267 Edgware Rd, London NW9 6NB, United Kingdom",
     "description": "Finger licking good fried chicken",
     "types": ["fast_food", "chicken"],
-    "owner": "rest_0"
+    "owner": "rest1@gmail.com"
   },
   {
     "id": 2,
@@ -24,7 +24,7 @@
     "address": "Two Rivers Retail Park, Norris Rd, Staines-upon-Thames, Staines TW18 4UP",
     "description": "Need a rest, have a dessert",
     "types": ["dessert"],
-    "owner": "rest_0"
+    "owner": "rest2@gmail.com"
   },
   {
     "id": 3,
@@ -33,6 +33,6 @@
     "address": "Eastbourne Rd, Blindley Heath, Lingfield RH7 6JJ",
     "description": "Fit for any time of the year, any time fo the day",
     "types": ["cafe", "cake", "drink"],
-    "owner": "rest_0"
+    "owner": "rest2@gmail.com"
   }
 ]
