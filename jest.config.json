@@ -1,0 +1,17 @@
+{
+  "collectCoverageFrom": [
+    "**/*.{js,jsx,ts,tsx}",
+    "!**/node_modules/**",
+    "!**/*.d.ts"
+  ],
+
+  "preset": "ts-jest/presets/js-with-ts",
+
+  "globals": {
+    "ts-jest": {
+      "tsConfig": {
+        "allowJs": true
+      }
+    }
+  }
+}

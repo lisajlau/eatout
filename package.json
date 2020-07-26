@@ -1,0 +1,36 @@
+{
+  "name": "eatout",
+  "version": "1.0.0",
+  "description": "Delivering food to our users",
+  "repository": "https://git.toptal.com/screening/lisa-lau",
+  "author": "lisaljl",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -r dist",
+    "dev": "parcel src/index.html",
+    "start:backend": "node backend/index",
+    "build": "parcel build src/index.html",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@types/react": "^16.9.42",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-router-dom": "^5.1.5",
+    "@types/styled-components": "^5.1.1",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-router-dom": "^5.2.0",
+    "styled-components": "^5.1.1",
+    "typescript": "^3.9.6"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.4",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "jest": "^26.1.0",
+    "prettier": "^2.0.5",
+    "ts-jest": "^26.1.1"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "users": ["rest1@gmail.com", "rest2@gmail.com"],
+  "account_details": [
+    {
+      "username": "rest1@gmail.com",
+      "name": "Nilash Kumar",
+      "password": "rest1"
+    },
+    {
+      "username": "rest2@gmail.com",
+      "name": "Madi Forest",
+      "password": "rest2"
+    }
+  ]
+}

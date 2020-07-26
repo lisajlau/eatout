@@ -1,0 +1,88 @@
+{
+  "rest_0": [
+    {
+      "meal_id": "meal_0",
+      "name": "Curry chicken",
+      "description": "Delicious curry chicken",
+      "price": 10
+    },
+    {
+      "meal_id": "meal_1",
+      "name": "Mix Tandoori Grill",
+      "description": "The perfect selection, consisting of chicken wings, seekh kebab, lamb chops, chicken tikka, and lamb tikka.",
+      "price": 20
+    }
+  ],
+  "rest_1": [
+    {
+      "meal_id": "meal_0",
+      "name": "Fried chicken",
+      "description": "Chicken tossed in Sam’s secret special breading, simply wonderful.",
+      "price": 3.5
+    },
+    {
+      "meal_id": "meal_1",
+      "name": "Chicken nuggets (box of 5)",
+      "description": "Chicken nuggets tossed in Sam’s secret special breading, simply wonderful.",
+      "price": 5
+    },
+    {
+      "meal_id": "meal_2",
+      "name": "BBQ wings (4 pieces)",
+      "description": "Chicken wings cooked with our secret recipe",
+      "price": 4
+    }
+  ],
+  "rest_2": [
+    {
+      "meal_id": "meal_0",
+      "name": "Dutch Apple Cheesecake",
+      "description": "The famous classic cheesecake with homemade baked apples, caramel and brown sugar cinnamon streusel on a graham cracker crumb.",
+      "price": 4.5
+    },
+    {
+      "meal_id": "meal_1",
+      "name": "Classic Vanilla Cheesecake",
+      "description": "For those who love cheese",
+      "price": 5
+    },
+    {
+      "meal_id": "meal_2",
+      "name": "White Chocolate and Raspberry Cheesecake",
+      "description": "The secret recipe cheesecake",
+      "price": 4
+    },
+    {
+      "meal_id": "meal_3",
+      "name": "Red Velvet Cheesecake",
+      "description": "Red Velvet cake and a creamy classic cheesecake, layered with rich cream cheese icing, and finished with white chocolate curls",
+      "price": 5
+    }
+  ],
+  "rest_3": [
+    {
+      "meal_id": "meal_0",
+      "name": "Traditional Winter Melon",
+      "description": "Winter melon beverage made according to a traditional Taiwanese recipe. This is a caffeine- free drink with fixed sweetness.",
+      "price": 6.5
+    },
+    {
+      "meal_id": "meal_1",
+      "name": "MissMe Milk - Warm/Hot",
+      "description": "Fresh Milk with Sweet Red Bean. A classic caffeinated beverage made with fresh cow's milk and coarsely mashed red bean. The deep and sweet flavour of our red beans is truly delightful. ",
+      "price": 7
+    },
+    {
+      "meal_id": "meal_2",
+      "name": "Yakult Iced Tea",
+      "description": "Classic Yakult drink with our fragrant green tea. It carries a mixed flavour of citrus and vanilla, which will become your new addiction. ",
+      "price": 8
+    },
+    {
+      "meal_id": "meal_3",
+      "name": "Mudflip Milk Tea",
+      "description": "Our take on the classic “Bubble Milk Tea”. We use the bigger ‘boba’ tapioca pearls which are cooked everyday with the premium brown sugar from Taiwan. ",
+      "price": 6.5
+    }
+  ]
+}

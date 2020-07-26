@@ -1,0 +1,38 @@
+[
+  {
+    "id": 0,
+    "restaurant_id": "rest_0",
+    "name": "Bilash Indian Restaurant",
+    "address": "8 Merton Park Parade, London SW19 3NT",
+    "description": "Delicious indian food",
+    "types": ["indian"],
+    "owner": "rest_0"
+  },
+  {
+    "id": 1,
+    "restaurant_id": "rest_1",
+    "name": "Sam's chicken",
+    "address": "267 Edgware Rd, London NW9 6NB, United Kingdom",
+    "description": "Finger licking good fried chicken",
+    "types": ["fast_food", "chicken"],
+    "owner": "rest_0"
+  },
+  {
+    "id": 2,
+    "restaurant_id": "rest_2",
+    "name": "Spoons Restaurant",
+    "address": "Two Rivers Retail Park, Norris Rd, Staines-upon-Thames, Staines TW18 4UP",
+    "description": "Need a rest, have a dessert",
+    "types": ["dessert"],
+    "owner": "rest_0"
+  },
+  {
+    "id": 3,
+    "restaurant_id": "rest_3",
+    "name": "My dream cafe",
+    "address": "Eastbourne Rd, Blindley Heath, Lingfield RH7 6JJ",
+    "description": "Fit for any time of the year, any time fo the day",
+    "types": ["cafe", "cake", "drink"],
+    "owner": "rest_0"
+  }
+]

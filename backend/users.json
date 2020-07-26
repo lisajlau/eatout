@@ -1,0 +1,17 @@
+{
+  "users": ["user1@gmail.com", "user2@gmail.com"],
+  "account_details": [
+    {
+      "username": "user1@gmail.com",
+      "name": "John Mackarel",
+      "password": "user1",
+      "blocked": ["rest_0"]
+    },
+    {
+      "username": "user2@gmail.com",
+      "first_name": "Rob Canti",
+      "password": "user2",
+      "blocked": []
+    }
+  ]
+}
