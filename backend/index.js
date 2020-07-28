@@ -198,6 +198,7 @@ app.post("/restaurants/register", (req, res) => {
     types,
     restaurant_id,
   });
+  meals[restaurant_id] = [];
   res.status(200).send(`Restaurant ${name} added`);
 });
 
@@ -238,7 +239,7 @@ app.get("/restaurant/:id/meals/:mealId", (req, res) => {
   if (!found.length) {
     return res.status(400).send("Restaurant not found");
   }
-  const foundMeal = meals[restId].filter((meal) => meal.meal_id === mealId);
+  const foundMeal = meals[restId].find((meal) => meal.meal_id === mealId);
   res.send(foundMeal);
 });
 
@@ -261,6 +262,18 @@ app.post("/restaurant/:id/meals/:mealId", (req, res) => {
     price,
   };
   res.send(`Meal ${mealId} updated`);
+});
+
+app.post("/restaurant/:id/meals/:mealId/remove", (req, res) => {
+  const restId = req.params.id;
+  const mealId = req.params.mealId;
+  const found = restaurants.filter((res) => res.restaurant_id === restId);
+  if (!found.length) {
+    return res.status(400).send("Restaurant not found");
+  }
+  let foundMeal = meals[restId].findIndex((meal) => meal.meal_id === mealId);
+  meals[restId].splice(foundMeal, 1);
+  res.status(200).send();
 });
 
 app.post("/restaurant/:id/meals/:mealId/remove", (req, res) => {
@@ -327,7 +340,7 @@ app.post("/orders/place", (req, res) => {
   if (ordersByUser.length > 0) {
     const openOrdersByUser = ordersByUser.filter(
       (order) =>
-        order.status !== Status.DELIVERED && order.status !== Status.CANCELLED
+        order.status !== Status.RECEIVED && order.status !== Status.CANCELLED
     );
     if (openOrdersByUser.length > 0) {
       return res
@@ -396,6 +409,30 @@ app.get("/owners/:username/restaurants", (req, res) => {
   const username = req.params.username;
   const found = restaurants.filter((res) => res.owner === username);
   return res.status(200).send(found);
+});
+
+app.get("/restaurant/:restaurant_id/blocked", (req, res) => {
+  const restaurant_id = req.params.restaurant_id;
+  const blockedUsers = [];
+  users.account_details.forEach((detail) => {
+    if (detail.blocked.includes(restaurant_id)) {
+      blockedUsers.push(detail.username);
+    }
+  });
+  return res.status(200).send(blockedUsers);
+});
+
+app.post("/restaurant/:restaurant_id/block/:username", (req, res) => {
+  const restaurant_id = req.params.restaurant_id;
+  const username = req.params.username;
+  const userDetails = users.account_details.filter(
+    (detail) => detail.username === username
+  )[0];
+  if (!userDetails.blocked.includes(restaurant_id)) {
+    userDetails.blocked.push(restaurant_id);
+    return res.status(200).send();
+  }
+  return res.status(200).send();
 });
 
 app.get("/restaurant/:restaurant_id/orders", (req, res) => {

@@ -221,6 +221,15 @@ export const editMealForRestaurant = async (
   });
 };
 
+export const removeMealForRestaurant = async (
+  restId: string,
+  mealId: string
+) => {
+  return apiFetch<string>(`/restaurant/${restId}/meals/${mealId}/remove`, {
+    method: "POST",
+  });
+};
+
 export const getMealForRestaurant = async (restId: string, mealId: string) => {
   return apiFetch<MealI>(`/restaurant/${restId}/meals/${mealId}`);
 };
@@ -231,6 +240,19 @@ export const removeMealFromRestaurant = async (
   mealId: string
 ) => {
   return apiFetch<string>(`/restaurant/${restId}/meals/${mealId}/remove`, {
+    method: "POST",
+  });
+};
+
+export const getAllBlockedByRestaurant = async (restId: string) => {
+  return apiFetch<string[]>(`/restaurant/${restId}/blocked`);
+};
+
+export const blockUserForRestaurant = async (
+  restId: string,
+  username: string
+) => {
+  return apiFetch<string[]>(`/restaurant/${restId}/block/${username}`, {
     method: "POST",
   });
 };

@@ -117,12 +117,15 @@ const OrderStatusView: FC<{}> = () => {
           ))}
         </Cart>
         {error && <Banner type={BannerType.ERROR} message={error} />}
-        {isUser && order.status === OrderStatus.Placed && (
-          <div>
+
+        <div>
+          {isUser && order.status === OrderStatus.Placed && (
             <button onClick={onCancel}>Cancel order</button>
+          )}
+          {isUser && order.status === OrderStatus.Delivered && (
             <button onClick={onReceived}>Mark as received</button>
-          </div>
-        )}
+          )}
+        </div>
       </OrderBox>
     );
   };

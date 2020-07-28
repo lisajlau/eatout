@@ -5,6 +5,7 @@ import {
   MealI,
   getMealForRestaurant,
   editMealForRestaurant,
+  removeMealForRestaurant,
 } from "../../../services/api";
 import { useAsync } from "react-use";
 import MyRestaurantMealForm from "./MyRestaurantMealForm";
@@ -46,6 +47,15 @@ const MyRestaurantMealEdit: FC<{}> = ({}) => {
     [restaurantId, mealId]
   );
 
+  const onRemove = useCallback(async () => {
+    try {
+      await removeMealForRestaurant(restaurantId, mealId);
+      history.push(`/myrestaurant/${restaurantId}/edit`);
+    } catch (e) {
+      setError(e.message);
+    }
+  }, []);
+
   return (
     <Content>
       <div className="container">
@@ -58,7 +68,11 @@ const MyRestaurantMealEdit: FC<{}> = ({}) => {
         ) : fetchData.error ? (
           <Banner message={fetchData.error.message} type={BannerType.ERROR} />
         ) : (
-          <MyRestaurantMealForm item={meal} onSubmit={onUpdate} />
+          <MyRestaurantMealForm
+            item={meal}
+            onSubmit={onUpdate}
+            onRemove={onRemove}
+          />
         )}
       </div>
     </Content>

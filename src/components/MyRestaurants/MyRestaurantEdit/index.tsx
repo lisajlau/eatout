@@ -18,6 +18,8 @@ import {
   getAllOrderByRestaurant,
   OrderStatus,
   updateOrder,
+  getAllBlockedByRestaurant,
+  blockUserForRestaurant,
 } from "../../../services/api";
 import EditMealItem from "./EditMealItem";
 import Banner, { BannerType } from "../../Banner";
@@ -28,6 +30,7 @@ const OrderStatusFlow = {
   [OrderStatus.Processing]: OrderStatus.InRoute,
   [OrderStatus.InRoute]: OrderStatus.Delivered,
   [OrderStatus.Delivered]: OrderStatus.Received,
+  [OrderStatus.Cancelled]: "",
 };
 
 const Flexbox = styled.div`
@@ -65,12 +68,16 @@ const MyRestaurantsEdit: FC<{}> = () => {
   const { restaurantId } = useParams();
   const [restaurant, setRestaurant] = useState<RestaurantI>(null);
   const [orders, setOrders] = useState<ConfirmedOrderI[]>(null);
+  const [blockedUsers, setBlockedUsers] = useState<string[]>([]);
+  const [blockedUserInput, setBlockedUserInput] = useState<string>("");
   const [error, setError] = useState("");
   const fetchData = useAsync(async () => {
     const resp = await fetchRestaurantDetails(restaurantId);
     setRestaurant(resp);
     const orderResp = await getAllOrderByRestaurant(restaurantId);
     setOrders(orderResp);
+    const blockedResp = await getAllBlockedByRestaurant(restaurantId);
+    setBlockedUsers(blockedResp);
   }, []);
 
   const onUpdate = useCallback(
@@ -100,6 +107,18 @@ const MyRestaurantsEdit: FC<{}> = () => {
     },
     [restaurantId]
   );
+  const handleChange = useCallback((e) => {
+    let value = e.target.value;
+    setBlockedUserInput(value);
+  }, []);
+  const blockUser = useCallback(
+    async (e) => {
+      await blockUserForRestaurant(restaurantId, blockedUserInput);
+      setBlockedUsers([...blockedUsers, blockedUserInput]);
+      setBlockedUserInput("");
+    },
+    [blockedUsers, blockedUserInput]
+  );
   return (
     <Content>
       <div className="container">
@@ -120,6 +139,38 @@ const MyRestaurantsEdit: FC<{}> = () => {
             <h3>{restaurant.name}</h3>
             <Paragraph>{restaurant.description}</Paragraph>
             <Paragraph>Address: {restaurant.address}</Paragraph>
+
+            <Spacer />
+
+            <h4>Orders</h4>
+            {orders.map((order) => (
+              <OrderBox key={order.order_id}>
+                <div>
+                  {OrderStatusFlow[order.status] &&
+                    OrderStatusFlow[order.status] !== OrderStatus.Received && (
+                      <button
+                        className="button-primary"
+                        onClick={() =>
+                          onUpdate(
+                            order.order_id,
+                            OrderStatusFlow[order.status]
+                          )
+                        }
+                      >
+                        {OrderStatusFlow[order.status]}
+                      </button>
+                    )}
+                </div>
+                <div>{order.status}</div>
+                <div>{formatDateTime(new Date(order.updated_at))}</div>
+                <div>{order.order_id}</div>
+                <div>
+                  <Link to={`/confirmed/order/${order.order_id}`}>
+                    <button>View</button>
+                  </Link>
+                </div>
+              </OrderBox>
+            ))}
             <Spacer />
             <h4>Menu</h4>
             <button onClick={onAddMeal} className="button-primary">
@@ -136,31 +187,17 @@ const MyRestaurantsEdit: FC<{}> = () => {
               ))}
 
             <Spacer />
-            <h4>Orders</h4>
-            {orders.map((order) => (
-              <OrderBox key={order.order_id}>
-                <div>
-                  {order.status !== OrderStatus.Received && (
-                    <button
-                      className="button-primary"
-                      onClick={() =>
-                        onUpdate(order.order_id, OrderStatusFlow[order.status])
-                      }
-                    >
-                      {OrderStatusFlow[order.status]}
-                    </button>
-                  )}
-                </div>
-                <div>{order.status}</div>
-                <div>{formatDateTime(new Date(order.updated_at))}</div>
-                <div>{order.order_id}</div>
-                <div>
-                  <Link to={`/confirmed/order/${order.order_id}`}>
-                    <button>View</button>
-                  </Link>
-                </div>
-              </OrderBox>
-            ))}
+            <h4>Blocked</h4>
+            <Paragraph>{blockedUsers.join(", ")}</Paragraph>
+            <Paragraph>
+              <input
+                type="text"
+                placeholder="Block username"
+                value={blockedUserInput}
+                onChange={handleChange}
+              />
+              <button onClick={blockUser}>Add</button>
+            </Paragraph>
           </>
         )}
       </div>

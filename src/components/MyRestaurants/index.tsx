@@ -142,7 +142,7 @@ const MyRestaurants: FC<{}> = () => {
                     <RestaurantCell item={rest} />
                     <ButtonDiv>
                       <Link to={`myrestaurant/${rest.restaurant_id}/edit`}>
-                        <Button className="button-primary">Edit</Button>
+                        <Button className="button-primary">View</Button>
                       </Link>
                       <Button onClick={() => onRemove(rest.restaurant_id)}>
                         Remove

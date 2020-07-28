@@ -17,6 +17,7 @@ import { useHistory, useParams } from "react-router-dom";
 type MyRestaurantMealFormProps = {
   onSubmit: (meal: MealI) => void;
   item?: MealI;
+  onRemove?: () => void;
 };
 
 const ButtonDiv = styled.div`
@@ -30,6 +31,7 @@ const Button = styled.button`
 
 const MyRestaurantMealForm: FC<MyRestaurantMealFormProps> = ({
   onSubmit,
+  onRemove,
   item,
 }) => {
   const { restaurantId } = useParams();
@@ -39,10 +41,8 @@ const MyRestaurantMealForm: FC<MyRestaurantMealFormProps> = ({
     name: "",
     price: 0,
   });
-  const [error, setError] = useState("");
   const handleChange = useCallback(
     async (e) => {
-      setError("");
       let value = e.target.value;
       if (e.target.id === "types") {
         value = value.split(";");
@@ -54,15 +54,15 @@ const MyRestaurantMealForm: FC<MyRestaurantMealFormProps> = ({
     },
     [meal]
   );
-  // useEffect(() => {
-  //   if (item) {
-  //     setMeal({
-  //       description: item.description,
-  //       name: item.name,
-  //       price: item.price,
-  //     });
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (item) {
+      setMeal({
+        description: item.description,
+        name: item.name,
+        price: item.price,
+      });
+    }
+  }, []);
   const onClose = useCallback(() => {
     history.push(`/myrestaurant/${restaurantId}/edit`);
   }, []);
@@ -117,6 +117,11 @@ const MyRestaurantMealForm: FC<MyRestaurantMealFormProps> = ({
           <Button type="button" onClick={onClose}>
             Cancel
           </Button>
+          {item && (
+            <Button type="button" onClick={onRemove}>
+              Remove
+            </Button>
+          )}
         </ButtonDiv>
       </form>
     </div>
