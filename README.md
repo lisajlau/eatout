@@ -55,6 +55,7 @@ Refer to (doc)[./Endpoint.md]
 - This has not been tested with multiple devices, but have been build with responsive in mind
 - There are some example tests cases but they are not complete
 - The UI is almost similar for a restaurant owner and a regular user but an owner gets extra features e.g. "My Restaurants tab"
+- 4 videos have been included in the videos folder
 
 ## Functional requirements
 
