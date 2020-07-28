@@ -10,7 +10,7 @@ export enum OrderStatus {
 }
 
 export interface MealI {
-  meal_id: string;
+  meal_id?: string;
   name: string;
   description: string;
   price: number;
@@ -46,7 +46,7 @@ export interface RestaurantI {
   restaurant_id?: string;
   name: string;
   description: string;
-  owner: string;
+  owner?: string;
   address: string;
   types?: string[];
   meals?: MealI[];
@@ -156,12 +156,13 @@ export const placeOrder = async (order: PlaceOrderPayload) => {
 export const fetchConfirmedOrder = async (orderId: string) => {
   return apiFetch<ConfirmedOrderI>(`/orders/${orderId}`);
 };
-export const cancelOrder = async (orderId: string) => {
-  return apiFetch<ConfirmedOrderI>(`/orders/${orderId}/cancel`, {
+export const updateOrder = async (orderId: string, status: OrderStatus) => {
+  return apiFetch<ConfirmedOrderI>(`/orders/${orderId}`, {
     method: "POST",
     headers: {
       "Content-Type": MimeType.JSON,
     },
+    body: JSON.stringify({ status }),
   });
 };
 
@@ -189,5 +190,47 @@ export const removeRestaurantById = async (userId: string, restId: string) => {
     headers: {
       "Content-Type": MimeType.JSON,
     },
+  });
+};
+
+export const getAllOrderByRestaurant = async (restId: string) => {
+  return apiFetch<ConfirmedOrderI[]>(`/restaurant/${restId}/orders`);
+};
+
+export const addMealToRestaurant = async (restId: string, data: MealI) => {
+  return apiFetch<string>(`/restaurant/${restId}/meals`, {
+    method: "POST",
+    headers: {
+      "Content-Type": MimeType.JSON,
+    },
+    body: JSON.stringify(data),
+  });
+};
+
+export const editMealForRestaurant = async (
+  restId: string,
+  mealId: string,
+  data: MealI
+) => {
+  return apiFetch<string>(`/restaurant/${restId}/meals/${mealId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": MimeType.JSON,
+    },
+    body: JSON.stringify(data),
+  });
+};
+
+export const getMealForRestaurant = async (restId: string, mealId: string) => {
+  return apiFetch<MealI>(`/restaurant/${restId}/meals/${mealId}`);
+};
+
+export const removeMealFromRestaurant = async (
+  restId: string,
+  data: RestaurantI,
+  mealId: string
+) => {
+  return apiFetch<string>(`/restaurant/${restId}/meals/${mealId}/remove`, {
+    method: "POST",
   });
 };

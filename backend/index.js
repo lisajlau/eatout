@@ -27,6 +27,23 @@ let allOrders = [
     status: "Cancelled",
     updated_at: "2020-07-26T18:47:23.757Z",
   },
+  {
+    order_id: "order_1",
+    username: "user1@gmail.com",
+    orders: [
+      {
+        meal_id: "meal_0",
+        count: 1,
+        name: "Traditional Winter Melon",
+        price: 6.5,
+      },
+      { meal_id: "meal_1", count: 2, name: "MissMe Milk - Warm/Hot", price: 7 },
+      { meal_id: "meal_2", count: 3, name: "Yakult Iced Tea", price: 8 },
+    ],
+    restaurant_id: "rest_0",
+    status: "Placed",
+    updated_at: "2020-07-26T18:47:23.757Z",
+  },
 ];
 const app = express();
 
@@ -203,12 +220,61 @@ app.post("/restaurant/:id/meals", (req, res) => {
     return res.status(400).send("Restaurant not found");
   }
   const { name, description, price } = req.body;
+  const rnd = Math.floor(Math.random() * 10000000);
+  const meal_id = `meal_${rnd}`;
   meals[id].push({
+    meal_id,
     name,
     description,
     price,
   });
   res.send("Meal added");
+});
+
+app.get("/restaurant/:id/meals/:mealId", (req, res) => {
+  const restId = req.params.id;
+  const mealId = req.params.mealId;
+  const found = restaurants.filter((res) => res.restaurant_id === restId);
+  if (!found.length) {
+    return res.status(400).send("Restaurant not found");
+  }
+  const foundMeal = meals[restId].filter((meal) => meal.meal_id === mealId);
+  res.send(foundMeal);
+});
+
+app.post("/restaurant/:id/meals/:mealId", (req, res) => {
+  if (!req.body) {
+    return res.status(400).send("No information sent");
+  }
+  const restId = req.params.id;
+  const mealId = req.params.mealId;
+  const found = restaurants.filter((res) => res.restaurant_id === restId);
+  if (!found.length) {
+    return res.status(400).send("Restaurant not found");
+  }
+  let foundMeal = meals[restId].findIndex((meal) => meal.meal_id === mealId);
+  const { name, description, price } = req.body;
+  meals[restId][foundMeal] = {
+    meal_id: mealId,
+    name,
+    description,
+    price,
+  };
+  res.send(`Meal ${mealId} updated`);
+});
+
+app.post("/restaurant/:id/meals/:mealId/remove", (req, res) => {
+  if (!req.body) {
+    return res.status(400).send("No information sent");
+  }
+  const restId = req.params.id;
+  const mealId = req.params.mealId;
+  const found = restaurants.filter((res) => res.restaurant_id === restId);
+  if (!found.length) {
+    return res.status(400).send("Restaurant not found");
+  }
+  const foundIndex = meals[restId].findIndex((meal) => meal.meal_id === mealId);
+  meals.splice(foundIndex, 1);
 });
 
 app.get("/restaurant/:restaurant_id", (req, res) => {
@@ -300,14 +366,17 @@ app.get("/orders/:order_id", (req, res) => {
   return res.status(200).send(currentOrder);
 });
 
-app.post("/orders/:order_id/cancel", (req, res) => {
+app.post("/orders/:order_id", (req, res) => {
   const order_id = req.params.order_id;
-  const currentOrder = allOrders.find((order) => order.order_id === order_id);
-  if (currentOrder.status === Status.PLACED) {
-    currentOrder.status = Status.CANCELLED;
-    return res.status(200).send(currentOrder);
+  const { status } = req.body;
+  const currentOrder = allOrders.filter(
+    (order) => order.order_id === order_id
+  )[0];
+  if (!currentOrder && currentOrder.length === 0) {
+    return res.status(400).send(`Failed to cancel order ${order_id}`);
   }
-  return res.status(400).send(`Failed to cancel order ${order_id}`);
+  currentOrder.status = status;
+  return res.status(200).send(currentOrder);
 });
 
 app.get("/users/:username/openOrders", (req, res) => {
@@ -329,7 +398,13 @@ app.get("/owners/:username/restaurants", (req, res) => {
   return res.status(200).send(found);
 });
 
-app.get("/restaurant/:id/orders", (req, res) => {});
+app.get("/restaurant/:restaurant_id/orders", (req, res) => {
+  const restaurant_id = req.params.restaurant_id;
+  const ordersByUser = allOrders.filter(
+    (order) => order.restaurant_id === restaurant_id
+  );
+  return res.status(200).send(ordersByUser);
+});
 
 // Start it up.
 

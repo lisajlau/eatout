@@ -89,8 +89,4 @@ Refer to (doc)[./Endpoint.md]
 
 ### TODO
 
-1. Allow owners to see orders for a restaurant
-2. Add meals to restaurants
-3. Block users
-4. Update orders
-5. Update readme and videos
+4. Update readme and videos

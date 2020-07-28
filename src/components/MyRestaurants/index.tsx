@@ -19,6 +19,7 @@ import {
   spacer12,
   alabaster,
   doveGray,
+  sprout,
 } from "../../styles/tokens";
 import { Link, useHistory } from "react-router-dom";
 import Loader from "../Loader";
@@ -140,7 +141,9 @@ const MyRestaurants: FC<{}> = () => {
                   <RestaurantGrid key={rest.restaurant_id}>
                     <RestaurantCell item={rest} />
                     <ButtonDiv>
-                      <Button className="button-primary">Edit</Button>
+                      <Link to={`myrestaurant/${rest.restaurant_id}/edit`}>
+                        <Button className="button-primary">Edit</Button>
+                      </Link>
                       <Button onClick={() => onRemove(rest.restaurant_id)}>
                         Remove
                       </Button>

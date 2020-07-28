@@ -9,6 +9,9 @@ import Checkout from "./Checkout";
 import OrderStatusView from "./OrderStatusView";
 import MyOrders from "./MyOrders";
 import MyRestaurants from "./MyRestaurants";
+import MyRestaurantsEdit from "./MyRestaurants/MyRestaurantEdit";
+import MyRestaurantMealAdd from "./MyRestaurants/MyRestaurantMeal/Add";
+import MyRestaurantMealEdit from "./MyRestaurants/MyRestaurantMeal/Edit";
 
 const App: React.FC<{}> = () => {
   return (
@@ -20,6 +23,18 @@ const App: React.FC<{}> = () => {
           <Route path="/myrestaurants">
             <Header login />
             <MyRestaurants />
+          </Route>
+          <Route path="/myrestaurant/:restaurantId/edit">
+            <Header login />
+            <MyRestaurantsEdit />
+          </Route>
+          <Route path="/myrestaurant/:restaurantId/meals/add">
+            <Header login />
+            <MyRestaurantMealAdd />
+          </Route>
+          <Route path="/myrestaurant/:restaurantId/meals/:mealId">
+            <Header login />
+            <MyRestaurantMealEdit />
           </Route>
           <Route path="/myorders">
             <Header login />

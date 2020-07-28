@@ -28,7 +28,7 @@ const Paragraph = styled.p`
 `;
 
 const Restaurant: FC<{}> = () => {
-  const [restaurant, setRestaurant] = useState<Restaurant>(null);
+  const [restaurant, setRestaurant] = useState<RestaurantI>(null);
   const { id } = useParams();
   const fetchData = useAsync(async () => {
     const resp = await fetchRestaurantDetails(id);

@@ -64,9 +64,9 @@ const RestaurantsListing: FC<RestaurantsProps> = ({ list }) => {
     <Grid>
       {list &&
         list.map((rest) => (
-          <>
+          <div key={rest.restaurant_id}>
             <RestaurantGrid>
-              <RestaurantCell item={rest} key={rest.restaurant_id} />
+              <RestaurantCell item={rest} />
 
               <RestaurantCTA>
                 <Button to={`/restaurant/${rest.restaurant_id}`}>
@@ -74,7 +74,7 @@ const RestaurantsListing: FC<RestaurantsProps> = ({ list }) => {
                 </Button>
               </RestaurantCTA>
             </RestaurantGrid>
-          </>
+          </div>
         ))}
     </Grid>
   );

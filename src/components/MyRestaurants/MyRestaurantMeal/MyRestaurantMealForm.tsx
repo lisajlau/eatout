@@ -1,8 +1,7 @@
 import * as React from "react";
-import { FC, useState, useCallback } from "react";
+import { FC, useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
-import { RestaurantI } from "../../services/api";
-
+import { MealI } from "../../../services/api";
 import {
   spacer40,
   fadeGray,
@@ -12,11 +11,12 @@ import {
   spacer12,
   alabaster,
   doveGray,
-} from "../../styles/tokens";
+} from "../../../styles/tokens";
+import { useHistory, useParams } from "react-router-dom";
 
-type RegisterRestaurant = {
-  onRegister: (rest: RestaurantI) => void;
-  onClose: () => void;
+type MyRestaurantMealFormProps = {
+  onSubmit: (meal: MealI) => void;
+  item?: MealI;
 };
 
 const ButtonDiv = styled.div`
@@ -28,15 +28,16 @@ const Button = styled.button`
   margin-right: ${spacer12};
 `;
 
-const RegisterRestaurant: FC<RegisterRestaurant> = ({
-  onRegister,
-  onClose,
+const MyRestaurantMealForm: FC<MyRestaurantMealFormProps> = ({
+  onSubmit,
+  item,
 }) => {
-  const [restaurant, setRestaurant] = useState<RestaurantI>({
-    name: "",
+  const { restaurantId } = useParams();
+  const history = useHistory();
+  const [meal, setMeal] = useState<MealI>({
     description: "",
-    address: "",
-    types: [],
+    name: "",
+    price: 0,
   });
   const [error, setError] = useState("");
   const handleChange = useCallback(
@@ -46,20 +47,31 @@ const RegisterRestaurant: FC<RegisterRestaurant> = ({
       if (e.target.id === "types") {
         value = value.split(";");
       }
-      setRestaurant({
-        ...restaurant,
+      setMeal({
+        ...meal,
         [e.target.id]: value,
       });
     },
-    [restaurant]
+    [meal]
   );
+  // useEffect(() => {
+  //   if (item) {
+  //     setMeal({
+  //       description: item.description,
+  //       name: item.name,
+  //       price: item.price,
+  //     });
+  //   }
+  // }, []);
+  const onClose = useCallback(() => {
+    history.push(`/myrestaurant/${restaurantId}/edit`);
+  }, []);
   return (
     <div>
-      <h4>Register</h4>
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          onRegister(restaurant);
+          onSubmit(meal);
         }}
       >
         <div>
@@ -67,9 +79,9 @@ const RegisterRestaurant: FC<RegisterRestaurant> = ({
           <input
             className="u-full-width"
             type="text"
-            placeholder="Business name"
+            placeholder="Name for meal"
             id="name"
-            value={restaurant.name}
+            value={meal.name}
             onChange={handleChange}
             required
           />
@@ -79,40 +91,28 @@ const RegisterRestaurant: FC<RegisterRestaurant> = ({
           <input
             className="u-full-width"
             type="text"
-            placeholder="Tell us more"
+            placeholder="Describe about the meal"
             id="description"
-            value={restaurant.description}
+            value={meal.description}
             onChange={handleChange}
             required
           />
         </div>
         <div>
-          <label htmlFor="address">Address</label>
+          <label htmlFor="price">Price</label>
           <input
             className="u-full-width"
-            type="text"
-            placeholder="Where is this"
-            id="address"
-            value={restaurant.address}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="types">Types</label>
-          <input
-            className="u-full-width"
-            type="text"
-            placeholder="Dessert; Fast food"
-            id="types"
-            value={restaurant.types.join(";")}
+            type="number"
+            placeholder="0.00"
+            id="price"
+            value={meal.price}
             onChange={handleChange}
             required
           />
         </div>
         <ButtonDiv>
           <Button type="submit" className="button-primary">
-            Register
+            Save
           </Button>
           <Button type="button" onClick={onClose}>
             Cancel
@@ -123,4 +123,4 @@ const RegisterRestaurant: FC<RegisterRestaurant> = ({
   );
 };
 
-export default RegisterRestaurant;
+export default MyRestaurantMealForm;

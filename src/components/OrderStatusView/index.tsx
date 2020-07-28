@@ -8,7 +8,7 @@ import {
   ConfirmedOrderI,
   fetchRestaurantDetails,
   RestaurantI,
-  cancelOrder,
+  updateOrder,
   OrderStatus,
 } from "../../services/api";
 import { Cookies } from "../../services/constant";
@@ -77,7 +77,18 @@ const OrderStatusView: FC<{}> = () => {
   const onCancel = useCallback(async () => {
     if (order.username === user.username) {
       try {
-        const resp = await cancelOrder(order.order_id);
+        const resp = await updateOrder(order.order_id, OrderStatus.Cancelled);
+        setOrder(resp);
+      } catch (err) {
+        setError(err.message);
+      }
+    }
+  }, [order]);
+
+  const onReceived = useCallback(async () => {
+    if (order.username === user.username) {
+      try {
+        const resp = await updateOrder(order.order_id, OrderStatus.Received);
         setOrder(resp);
       } catch (err) {
         setError(err.message);
@@ -109,6 +120,7 @@ const OrderStatusView: FC<{}> = () => {
         {isUser && order.status === OrderStatus.Placed && (
           <div>
             <button onClick={onCancel}>Cancel order</button>
+            <button onClick={onReceived}>Mark as received</button>
           </div>
         )}
       </OrderBox>
