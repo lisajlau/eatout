@@ -36,13 +36,13 @@ yarn build
 
 ### Endpoints
 
-Refer to (doc)[./Endpoint.md]
+Refer to [endpoint readme](./Endpoint.md)
 
 ### How to test
 
-1. A few accounts have been created, together with some restaurants. Refer to json files in the `backend` folder.
+1. A few accounts have been created, together with some restaurants. Refer to the json files in the `backend` folder (users.json and restaurants_owners.json).
 2. user1@gmail.com is currently blocked by rest_0
-3. You can sign into two different accounts, one in incognito one in the normal browser
+3. You can sign into two different accounts, one in incognito one in the normal browser if you like to test an owner and user account
 
 ## Technical implementations
 
